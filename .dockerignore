@@ -1,0 +1,8 @@
+vendor/
+.idea/
+.git/
+business-profiles/
+.env
+*.pb
+*.yml
+*.sh

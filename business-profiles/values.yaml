@@ -1,0 +1,49 @@
+# Default values for business-profiles.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: cloud.canister.io:5000/lucasantarella/business-profiles-profiles-api
+  tag: 0.0.1
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 50051
+
+#ingress:
+#  enabled: true
+#  annotations:
+#    kubernetes.io/ingress.class: istio
+#  hosts:
+#    - host: profiles.lucasantarella.com
+#      paths:
+#        - "/v1/profiles/*"
+
+ingress:
+  hosts:
+    - "profiles.lucasantarella.com"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
