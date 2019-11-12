@@ -25,11 +25,31 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: grpc
-              containerPort: 50051
+            - name: http
+              containerPort: 80
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: HTTP_PORT
+              value: "80"
+            - name: DB_HOST
+              value: "businessprofiles-cluster-mysql-master.mysql"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: businessprofiles-mysql-credentials
+                  key: "USER"
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: businessprofiles-mysql-credentials
+                  key: "PASSWORD"
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: businessprofiles-mysql-credentials
+                  key: "DATABASE"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

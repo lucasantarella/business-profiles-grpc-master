@@ -12,12 +12,10 @@ RUN --mount=type=ssh mkdir -p /var/ssh && \
     go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./main.go
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gateway ./gateway.go
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /app/main .
-COPY --from=builder /app/gateway .
-EXPOSE 50051
+EXPOSE 9001
 CMD ["./main"]

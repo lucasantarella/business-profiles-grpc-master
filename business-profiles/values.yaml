@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: cloud.canister.io:5000/lucasantarella/business-profiles-profiles-api
-  tag: 0.0.1
+  tag: 0.0.2
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -15,20 +15,21 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  port: 50051
-
-#ingress:
-#  enabled: true
-#  annotations:
-#    kubernetes.io/ingress.class: istio
-#  hosts:
-#    - host: profiles.lucasantarella.com
-#      paths:
-#        - "/v1/profiles/*"
+  port: 80
 
 ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: istio
   hosts:
-    - "profiles.lucasantarella.com"
+    - host: profiles.lucasantarella.com
+      paths:
+        - "/v1/profiles/*"
+
+
+#ingress:
+#  hosts:
+#    - "profiles.lucasantarella.com"
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

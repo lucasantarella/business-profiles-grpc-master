@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	address          = "localhost:9001"
+	address          = "profiles.lucasantarella.com:80"
 	defaultProfileId = 1
 )
 
