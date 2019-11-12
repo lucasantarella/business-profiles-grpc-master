@@ -44,7 +44,7 @@ func run() error {
 	db.SetMaxIdleConns(1)
 	defer db.Close()
 
-	log.Printf("listening on port: %s", grpcPort)
+	log.Printf("grpc listening on port: %s", grpcPort)
 	lis, err := net.Listen("tcp", grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -70,6 +70,7 @@ func run() error {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 
+	log.Printf("http listening on port: %s", httpListenPort)
 	return http.ListenAndServe(httpListenPort, httpGrpcRouter(s, router))
 }
 
