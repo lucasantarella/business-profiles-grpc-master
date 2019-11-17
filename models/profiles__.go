@@ -15,12 +15,13 @@ import (
 )
 
 const (
-	selectProfiles = "`id`, `first_name`, `last_name`, `email`, `profile_url`"
+	selectProfiles = "`id`, `user_id`, `first_name`, `last_name`, `email`, `profile_url`"
 )
 
 // Profiles represents a row in the profiles__ table
 type Profiles struct {
 	ID         int64  `json:"id"`
+	UserID     int64  `json:"user_id"`
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
 	Email      string `json:"email"`
@@ -31,8 +32,8 @@ type Profiles struct {
 
 // Insert a new Profiles row in the profiles__ table
 func (p *Profiles) Insert(qu Queryer) (lastInsertID int64, err error) {
-	const stmt = "INSERT INTO `profiles__` (`first_name`, `last_name`, `email`, `profile_url`) VALUES (?, ?, ?, ?)"
-	res, err := qu.Exec(stmt, p.FirstName, p.LastName, p.Email, p.ProfileURL)
+	const stmt = "INSERT INTO `profiles__` (`user_id`, `first_name`, `last_name`, `email`, `profile_url`) VALUES (?, ?, ?, ?, ?)"
+	res, err := qu.Exec(stmt, p.UserID, p.FirstName, p.LastName, p.Email, p.ProfileURL)
 	if err != nil {
 		return 0, err
 	}
@@ -41,8 +42,8 @@ func (p *Profiles) Insert(qu Queryer) (lastInsertID int64, err error) {
 
 // Update an existing Profiles row in the profiles__ table.
 func (p *Profiles) Update(qu Queryer, id int64) (int64, error) {
-	const stmt = "UPDATE `profiles__` SET `first_name`=?, `last_name`=?, `email`=?, `profile_url`=? WHERE id = ?"
-	result, err := qu.Exec(stmt, p.FirstName, p.LastName, p.Email, p.ProfileURL, id)
+	const stmt = "UPDATE `profiles__` SET `user_id`=?, `first_name`=?, `last_name`=?, `email`=?, `profile_url`=? WHERE id = ?"
+	result, err := qu.Exec(stmt, p.UserID, p.FirstName, p.LastName, p.Email, p.ProfileURL, id)
 	if err != nil {
 		return 0, err
 	}
@@ -52,8 +53,8 @@ func (p *Profiles) Update(qu Queryer, id int64) (int64, error) {
 // Upsert inserts a new Profiles row in the profiles__ table
 // if the unique constraints are not found, otherwise it updates it.
 func (p *Profiles) Upsert(qu Queryer) (lastInsertID int64, err error) {
-	const stmt = "INSERT INTO `profiles__` (`id`, `first_name`, `last_name`, `email`, `profile_url`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `id`=LAST_INSERT_ID(`id`), `first_name`=VALUES(`first_name`), `last_name`=VALUES(`last_name`), `email`=VALUES(`email`), `profile_url`=VALUES(`profile_url`)"
-	res, err := qu.Exec(stmt, p.ID, p.FirstName, p.LastName, p.Email, p.ProfileURL)
+	const stmt = "INSERT INTO `profiles__` (`id`, `user_id`, `first_name`, `last_name`, `email`, `profile_url`) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `id`=LAST_INSERT_ID(`id`), `first_name`=VALUES(`first_name`), `last_name`=VALUES(`last_name`), `email`=VALUES(`email`), `profile_url`=VALUES(`profile_url`)"
+	res, err := qu.Exec(stmt, p.ID, p.UserID, p.FirstName, p.LastName, p.Email, p.ProfileURL)
 	if err != nil {
 		return 0, err
 	}
@@ -64,7 +65,7 @@ func (p *Profiles) Upsert(qu Queryer) (lastInsertID int64, err error) {
 func (p *Profiles) Find(qu Queryer, id int64) error {
 	const stmt = "SELECT " + selectProfiles + " FROM `profiles__` WHERE id = ?"
 	row := qu.QueryRow(stmt, id)
-	return row.Scan(&p.ID, &p.FirstName, &p.LastName, &p.Email, &p.ProfileURL)
+	return row.Scan(&p.ID, &p.UserID, &p.FirstName, &p.LastName, &p.Email, &p.ProfileURL)
 }
 
 // Load all, or a subset of Profiles rows from the profiles__ table

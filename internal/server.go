@@ -14,13 +14,39 @@ type Server struct {
 	Db *sql.DB
 }
 
-func (s *Server) CreateProfile(context.Context, *pb.CreateProfileRequest) (*pb.CreateProfileResponse, error) {
+func (s *Server) GetProfileSocialLinks(ctx context.Context, in *pb.GetProfileSocialLinksRequest) (*pb.GetProfileSocialLinksResponse, error) {
+	defer utils.TimeTrack(time.Now(), "GetProfileSocialLinks")
+	log.Printf("onGetProfileSocialLinks")
+
+	// create model
+	socialModel := models.ProfilesSocial{}
+	socials, err := socialModel.FindByProfileID(s.Db, int64(in.ProfileId))
+
+	if err != nil {
+		return &pb.GetProfileSocialLinksResponse{}, err
+	}
+
+	socialPbSet := make([]*pb.ProfileSocialLink, len(socials))
+	for i, social := range socials {
+		socialPbSet[i] = &pb.ProfileSocialLink{
+			Provider: pb.ProfileSocialLink_SocialProvider(social.Type),
+			Value:    social.Value.String,
+		}
+	}
+	return &pb.GetProfileSocialLinksResponse{Links: socialPbSet}, nil
+}
+
+func (s *Server) GetProfileExperiences(context.Context, *pb.GetProfileExperiencesRequest) (*pb.GetProfileExperiencesResponse, error) {
+	panic("implement me")
+}
+
+func (s *Server) CreateProfile(context.Context, *pb.CreateProfileRequest) (*pb.Profile, error) {
 	defer utils.TimeTrack(time.Now(), "CreateProfile")
 	log.Printf("onCreateProfile")
 	panic("implement me")
 }
 
-func (s *Server) GetProfile(ctx context.Context, in *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
+func (s *Server) GetProfile(ctx context.Context, in *pb.GetProfileRequest) (*pb.Profile, error) {
 	defer utils.TimeTrack(time.Now(), "GetProfile")
 	log.Printf("onGetProfile")
 
@@ -29,14 +55,13 @@ func (s *Server) GetProfile(ctx context.Context, in *pb.GetProfileRequest) (*pb.
 	err := profile.Find(s.Db, int64(in.Id))
 
 	if err != nil {
-		resp := pb.GetProfileResponse{Ok: false, Error: err.Error()}
-		return &resp, err
+		return nil, err
 	}
 
-	return &pb.GetProfileResponse{Ok: true, Profile: profile.ToPbProfile()}, nil
+	return profile.ToPbProfile(), nil
 }
 
-func (s *Server) UpdateProfile(context.Context, *pb.UpdateProfileRequest) (*pb.UpdateProfileResponse, error) {
+func (s *Server) UpdateProfile(context.Context, *pb.UpdateProfileRequest) (*pb.Profile, error) {
 	defer utils.TimeTrack(time.Now(), "UpdateProfile")
 	log.Printf("onUpdateProfile")
 	panic("implement me")
